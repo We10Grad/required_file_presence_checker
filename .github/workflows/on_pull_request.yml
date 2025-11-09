@@ -30,7 +30,7 @@ jobs:
           aws logs put-log-events \
             --log-group-name "${{ secrets.LOG_GROUP_BETA }}" \
             --log-stream-name $TIMESTAMP \
-            --log-events timestamp=$(($(date +%s) * 1000)),message='{"workflow":"${{ github.workflow }}","commit":"${{ github.sha }}","actor":"${{ github.actor }}","timestamp":"'$TIMESTAMP'"}'
+            --log-events timestamp=$(($(date +%s) * 1000)),message="{\"workflow\":\"${{ github.workflow }}\",\"commit\":\"${{ github.sha }}\",\"actor\":\"${{ github.actor }}\",\"timestamp\":\"$TIMESTAMP\"}"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
