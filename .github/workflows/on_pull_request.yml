@@ -20,17 +20,24 @@ jobs:
       - name: Run Python script
         run: python3 check_required_files.py
       
-      - name: Log to CloudWatch
+     - name: Log to CloudWatch
         if: success()
         run: |
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+          EPOCH_MS=$(($(date +%s) * 1000))
+          LOG_MESSAGE=$(cat <<EOF
+          {"workflow":"${{ github.workflow }}","commit":"${{ github.sha }}","actor":"${{ github.actor }}","timestamp":"${TIMESTAMP}"}
+          EOF
+          )
+          
           aws logs create-log-stream \
             --log-group-name "${{ secrets.LOG_GROUP_BETA }}" \
-            --log-stream-name $TIMESTAMP
+            --log-stream-name "${TIMESTAMP}"
+          
           aws logs put-log-events \
             --log-group-name "${{ secrets.LOG_GROUP_BETA }}" \
-            --log-stream-name $TIMESTAMP \
-            --log-events timestamp=$(($(date +%s) * 1000)),message="{\"workflow\":\"${{ github.workflow }}\",\"commit\":\"${{ github.sha }}\",\"actor\":\"${{ github.actor }}\",\"timestamp\":\"$TIMESTAMP\"}"
+            --log-stream-name "${TIMESTAMP}" \
+            --log-events timestamp=${EPOCH_MS},message="${LOG_MESSAGE}"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
