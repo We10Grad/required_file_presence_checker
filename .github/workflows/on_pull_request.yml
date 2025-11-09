@@ -23,7 +23,7 @@ jobs:
       - name: Log to CloudWatch
         if: success()
         run: |
-          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
           aws logs create-log-stream \
             --log-group-name "${{ secrets.LOG_GROUP_BETA }}" \
             --log-stream-name $TIMESTAMP
