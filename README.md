@@ -1,5 +1,5 @@
 # File Presence Checker CI/CD Pipeline
-This is the new test for project
+A test for the file checker pipeline
 ## Overview
 This project uses GitHub Actions to automatically check for required files in the repository and logs successful runs to AWS CloudWatch.
 
