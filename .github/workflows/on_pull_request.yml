@@ -1,6 +1,6 @@
 name: Pull Request Validation
 on:
-  pull_request:
+  push:
     branches:
       - main
     types:
@@ -26,11 +26,11 @@ jobs:
           LOG_MESSAGE='{"workflow":"${{ github.workflow }}","commit":"${{ github.sha }}","actor":"${{ github.actor }}","timestamp":"'${TIMESTAMP}'"}'
           
           aws logs create-log-stream \
-            --log-group-name "${{ secrets.LOG_GROUP_BETA }}" \
+            --log-group-name "${{ secrets.LOG_GROUP_PROD }}" \
             --log-stream-name "${TIMESTAMP}" || true
           
           aws logs put-log-events \
-            --log-group-name "${{ secrets.LOG_GROUP_BETA }}" \
+            --log-group-name "${{ secrets.LOG_GROUP_PROD }}" \
             --log-stream-name "${TIMESTAMP}" \
             --log-events "timestamp=${EPOCH_MS},message=${LOG_MESSAGE}"
         env:
