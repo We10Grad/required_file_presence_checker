@@ -1,6 +1,6 @@
 name: Pull Request Validation
 on:
-  push:
+  pull_request:
     branches:
       - main
     types:
@@ -23,16 +23,15 @@ jobs:
         run: |
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
           EPOCH_MS=$(($(date +%s) * 1000))
-          LOG_MESSAGE='{"workflow":"${{ github.workflow }}","commit":"${{ github.sha }}","actor":"${{ github.actor }}","timestamp":"'${TIMESTAMP}'"}'
           
           aws logs create-log-stream \
-            --log-group-name "${{ secrets.LOG_GROUP_PROD }}" \
+            --log-group-name "${{ secrets.LOG_GROUP_BETA }}" \
             --log-stream-name "${TIMESTAMP}" || true
           
           aws logs put-log-events \
-            --log-group-name "${{ secrets.LOG_GROUP_PROD }}" \
+            --log-group-name "${{ secrets.LOG_GROUP_BETA }}" \
             --log-stream-name "${TIMESTAMP}" \
-            --log-events "timestamp=${EPOCH_MS},message=${LOG_MESSAGE}"
+            --log-events "[{\"timestamp\":${EPOCH_MS},\"message\":\"{\\\"workflow\\\":\\\"${{ github.workflow }}\\\",\\\"commit\\\":\\\"${{ github.sha }}\\\",\\\"actor\\\":\\\"${{ github.actor }}\\\",\\\"timestamp\\\":\\\"${TIMESTAMP}\\\"}\"}]"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
