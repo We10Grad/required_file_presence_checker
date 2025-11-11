@@ -74,3 +74,4 @@ python3 check_required_files.py
 - **AWS authentication errors**: Check that all three secrets are set correctly
 - **Log groups not found**: Create them in CloudWatch before running workflows
 - **Script fails but files exist**: Files must be in repo root with exact names (case-sensitive)
+Test edit to trigger workflow
