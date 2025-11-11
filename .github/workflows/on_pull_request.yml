@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - main
+    types:
+      - opened
+      - synchronize
+      - reopened
 jobs:
   check-files:
     runs-on: ubuntu-latest
